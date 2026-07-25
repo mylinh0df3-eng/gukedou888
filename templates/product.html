@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} - 客户评价 | XX窗帘布艺</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <span class="logo-icon">🏠</span>
+                    <span class="logo-text">XX窗帘布艺</span>
+                </a>
+                <a href="/" class="back-btn">← 返回首页</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="product-detail">
+        <div class="container">
+            <div class="product-detail-card">
+                <div class="product-detail-image">
+                    <img src="{{ product.image }}" alt="{{ product.name }}">
+                    <span class="product-category-badge">{{ product.category }}</span>
+                </div>
+                <div class="product-detail-info">
+                    <h1>{{ product.name }}</h1>
+                    <p class="product-description">{{ product.description }}</p>
+                    <div class="product-price-large">{{ product.price }}</div>
+                    <div class="product-rating-summary">
+                        <div class="avg-rating">
+                            <span class="big-rating">{{ avg_rating }}</span>
+                            <span class="out-of">/5</span>
+                        </div>
+                        <div class="stars-display" id="avgStars"></div>
+                        <span class="review-count">{{ review_count }}条评价</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="reviews-section">
+        <div class="container">
+            <div class="reviews-header">
+                <h2>客户评价 ({{ review_count }})</h2>
+                <button class="btn-primary" onclick="showReviewForm()">✍️ 写评价</button>
+            </div>
+
+            {% if reviews %}
+            <div class="reviews-list">
+                {% for review in reviews %}
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">{{ review.reviewer_name[0] }}</div>
+                            <div>
+                                <span class="reviewer-name">{{ review.reviewer_name }}</span>
+                                <span class="review-date">{{ review.created_at }}</span>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            {% for i in range(5) %}
+                            <span class="star {% if i < review.rating %}filled{% endif %}">★</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <p class="review-content">{{ review.content }}</p>
+                    
+                    {% if review.replies %}
+                    <div class="replies-section">
+                        {% for reply in review.replies %}
+                        <div class="reply-item">
+                            <span class="replier-name">{{ reply.replier_name }}</span>
+                            <p class="reply-content">{{ reply.content }}</p>
+                            <span class="reply-date">{{ reply.created_at }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <button class="btn-reply" onclick="showReplyForm('{{ review.id }}')">💬 回复</button>
+                    
+                    <div class="reply-form" id="reply-form-{{ review.id }}" style="display:none;">
+                        <input type="text" class="form-input" id="replier-name-{{ review.id }}" placeholder="您的称呼" value="商家">
+                        <textarea class="form-textarea" id="reply-content-{{ review.id }}" placeholder="写下回复..." rows="2"></textarea>
+                        <div class="form-actions">
+                            <button class="btn-secondary" onclick="hideReplyForm('{{ review.id }}')">取消</button>
+                            <button class="btn-primary btn-sm" onclick="submitReply('{{ review.id }}')">提交回复</button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-reviews">
+                <div class="empty-icon">📝</div>
+                <h3>还没有评价</h3>
+                <p>成为第一个评价的人吧！</p>
+                <button class="btn-primary" onclick="showReviewForm()">写评价</button>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <div class="modal-overlay" id="reviewModal">
+        <div class="modal">
+            <div cla
