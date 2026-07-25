@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - 评价审核</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="admin-header">
+        <div class="container">
+            <h1>📋 评价审核后台</h1>
+            <a href="/" style="color:#fff;">← 返回前台</a>
+        </div>
+    </div>
+
+    <div class="container" style="padding: 30px 0;">
+        <div class="filter-tabs">
+            <button class="tab active" onclick="filterReviews('all')">全部</button>
+            <button class="tab" onclick="filterReviews('pending')">待审核</button>
+            <button class="tab" onclick="filterReviews('approved')">已通过</button>
+            <button class="tab" onclick="filterReviews('rejected')">已拒绝</button>
+        </div>
+
+        <div id="reviewsContainer">
+            {% for review in reviews %}
+            <div class="review-card-admin" data-status="{{ review.status }}">
+                <div style="display:flex; justify-content:space-between; align-items:start;">
+                    <div>
+                        <strong>{{ review.reviewer_name }}</strong>
+                        <span class="review-status status-{{ review.status }}">
+                            {% if review.status == 'pending' %}⏳ 待审核
+                            {% elif review.status == 'approved' %}✅ 已通过
+                            {% else %}❌ 已拒绝
+                            {% endif %}
+                        </span>
+                    </div>
+                    <span style="color:#999; font-size:13px;">{{ review.created_at }}</span>
+                </div>
+                <div style="margin:8px 0;">
+                    {% for p in products %}
+                        {% if p.id == review.product_id %}
+                        <span class="product-badge">{{ p.category }} - {{ p.name }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div style="margin:10px 0; color:#e67e22;">
+                    {% for i in range(5) %}
+                        {% if i < review.rating %}★{% else %}☆{% endif %}
+                    {% endfor %}
+                </div>
+                <p style="color:#333;">{{ review.content }}</p>
+                {% if review.status == 'pending' %}
+                <div class="admin-actions">
+                    <button class="btn-approve" onclick="approveReview('{{ review.id }}', 'approve')">✅ 通过</button>
+                    <button class="btn-reject" onclick="approveReview('{{ review.id }}', 'reject')">❌ 拒绝</button>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function filterReviews(status) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.review-card-admin').forEach(card => {
+                card.style.display = (status === 'all' || card.dataset.status === status) ? 'block' : 'none';
+            });
+        }
+
+        async function approveReview(reviewId, action) {
+            try {
+                const res = await fetch('/api/approve_review', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({review_id: reviewId, action: action})
+                });
+                const data = await res.json();
+                if (data.success) location.reload();
+                else alert('操作失败');
+            } catch (err) { alert('网络错误'); }
+        }
+    </script>
+</body>
+</html>
