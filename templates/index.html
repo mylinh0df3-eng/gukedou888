@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XX窗帘布艺家纺 - 客户真实评价</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <span class="logo-icon">🏠</span>
+                    <span class="logo-text">XX窗帘布艺</span>
+                </a>
+                <nav class="nav-links">
+                    <a href="/" class="active">全部产品</a>
+                    <a href="/?category=窗帘">窗帘</a>
+                    <a href="/?category=布艺">布艺</a>
+                    <a href="/?category=家纺">家纺</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>客户的真实声音</h1>
+            <p>每一份评价都有消费凭证，真实可信赖</p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">500+</span>
+                    <span class="stat-label">满意客户</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4.8</span>
+                    <span class="stat-label">平均评分</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">98%</span>
+                    <span class="stat-label">好评率</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="products-section">
+        <div class="container">
+            <h2 class="section-title">我们的产品</h2>
+            <div class="product-grid">
+                {% for product in products %}
+                <a href="/product/{{ product.id }}" class="product-card">
+                    <div class="product-image">
+                        <img src="{{ product.image }}" alt="{{ product.name }}">
+                        <span class="product-category">{{ product.category }}</span>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">{{ product.name }}</h3>
+                        <p class="product-desc">{{ product.description }}</p>
+                        <div class="product-footer">
+                            <span class="product-price">{{ product.price }}</span>
+                            <span class="view-detail">查看评价 →</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 XX窗帘布艺家纺 | 所有评价均来自真实客户</p>
+            <p class="footer-note">消费记录可查，诚信经营</p>
+        </div>
+    </footer>
+</body>
+</html>
